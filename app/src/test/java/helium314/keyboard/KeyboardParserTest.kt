@@ -378,6 +378,26 @@ f""", // no newline at the end
         assertEquals("undo", key.toKeyParams(params).mHintIconName)
     }
 
+    @Test fun placeholderAsOnlyPopup() {
+        val key = LayoutParser.parseJsonString("""[[{ "label": "ক", "popup": { "relevant": [
+       { "type": "placeholder" }
+      ]
+    } }]]""").flatMap { row -> row.mapNotNull { it.compute(params) } }.single().toKeyParams(params).createKey()
+        assertEquals(null, key.popupKeys)
+        assertEquals(false, key.isLongPressEnabled())
+    }
+
+    @Test fun placeholderNextToOtherPopup() {
+        val key = LayoutParser.parseJsonString("""[[{ "label": "ক", "popup": { "relevant": [
+       { "type": "placeholder" },
+       { "label": "খ" }
+      ]
+    } }]]""").flatMap { row -> row.mapNotNull { it.compute(params) } }.single().toKeyParams(params).createKey()
+        assertEquals(1, key.popupKeys?.size)
+        assertEquals("খ", key.popupKeys?.first()?.mLabel)
+        assertEquals(true, key.isLongPressEnabled())
+    }
+
     @Test fun popupKeyWithIconAndImplicitText() {
         val key = LayoutParser.parseJsonString("""[[{ "label": "a", "popup": { "relevant": [
        { "label": "!icon/go_key|aa" }

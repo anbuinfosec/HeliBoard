@@ -33,14 +33,19 @@ object AppWorkarounds {
         }
     }
 
-    // of course they ignore android keycodes, because why should they stick to the same behavior we know from all other apps
-    fun doesntCareAboutKeycodePaste(packageName: String?) = isFirefoxOrFork(packageName)
+    // Some apps ignore KeyEvent.KEYCODE_PASTE and require Ctrl+V-style paste handling instead.
+    fun doesntCareAboutKeycodePaste(packageName: String?) = isFirefoxOrFork(packageName) || isKnownPasteKeycodeProblemApp(packageName)
 
     private fun isFirefoxOrFork(packageName: String?) = when (packageName) {
         "org.mozilla.fennec_fdroid", "org.mozilla.fenix", "org.mozilla.firefox_beta", "org.mozilla.focus",
         "org.mozilla.klar", "org.mozilla.firefox", "org.ironfoxoss.ironfox", "org.ironfoxoss.ironfox.nightly",
         "org.torproject.torbrowser", "org.torproject.torbrowser_alpha", "net.waterfox.android.release",
         "io.github.forkmaintainers.iceraven", "com.zen.web.tools.browser" -> true
+        else -> false
+    }
+
+    private fun isKnownPasteKeycodeProblemApp(packageName: String?) = when (packageName) {
+        "jp.sblo.pandora.jota.plus" -> true
         else -> false
     }
 }
