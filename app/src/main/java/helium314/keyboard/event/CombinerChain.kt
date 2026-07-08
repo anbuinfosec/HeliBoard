@@ -39,10 +39,11 @@ class CombinerChain(initialText: String, combiningSpec: String) {
     init {
         // The dead key combiner is always active, and always first
         mCombiners.add(DeadKeyCombiner())
-        if (combiningSpec == "hangul")
-            mCombiners.add(HangulCombiner())
-        else if (combiningSpec == "bn_khipro")
-            mCombiners.add(BnKhiproCombiner())
+        when (combiningSpec) {
+            "hangul" -> mCombiners.add(HangulCombiner())
+            "bn_khipro" -> mCombiners.add(BnKhiproCombiner())
+            "avro_phonetic" -> mCombiners.add(AvroPhoneticCombiner())
+        }
     }
 
     fun reset() {
